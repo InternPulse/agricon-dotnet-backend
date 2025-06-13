@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agricon", "Agricon.csproj", "{51810FEE-56C8-4CB8-98A5-0A67E3EF2449}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51810FEE-56C8-4CB8-98A5-0A67E3EF2449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51810FEE-56C8-4CB8-98A5-0A67E3EF2449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51810FEE-56C8-4CB8-98A5-0A67E3EF2449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51810FEE-56C8-4CB8-98A5-0A67E3EF2449}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F21BB3E3-9E3E-468E-BA55-8D7B1D34AEE1}
+	EndGlobalSection
+EndGlobal
