@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Agricon")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e008d9b9359ccf36b6439afb77498e9f79eaaec0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60ddd93982106e19e9cbb9ee13c3023985f037c1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Agricon")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Agricon")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

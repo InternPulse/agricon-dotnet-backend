@@ -85,7 +85,7 @@ namespace Agricon.Core.Application.Services
             var transaction = await _repo.GetByReferenceAsync(reference);
             if (transaction != null)
             {
-                transaction.Status = status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
+                transaction.Status = status == "SUCCESS" ? PaymentStatus.Success : PaymentStatus.Failed;
                 transaction.UpdatedAt = DateTime.UtcNow;
                 await _repo.SaveChangesAsync();
             }
