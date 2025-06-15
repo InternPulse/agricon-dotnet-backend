@@ -1,4 +1,5 @@
 ﻿using Agricon.Core.Model.Entities;
+using Agricon.Core.Model.Enums;
 
 namespace Agricon.Core.Application.Interface.Repositories
 {
@@ -6,6 +7,8 @@ namespace Agricon.Core.Application.Interface.Repositories
     {
         Task<Transaction> CreateAsync(Transaction transaction);
         Task<Transaction> GetByReferenceAsync(string reference);
+        Task<Transaction> GetByIdAsync(string id);
+        Task UpdateStatusAsync(string id, PaymentStatus newStatus);
         Task SaveChangesAsync();
     }
 
