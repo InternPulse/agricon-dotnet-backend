@@ -22,9 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Application\Interface\" />
+    <Folder Include="Core\Application\Interface\Services\" />
     <Folder Include="Core\Application\Service\" />
-    <Folder Include="Infrastructure\Repository\" />
   </ItemGroup>
 
 </Project>
