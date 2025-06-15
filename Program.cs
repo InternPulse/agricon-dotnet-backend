@@ -1,9 +1,12 @@
+using Agricon.Core.Application.Interface.Repositories;
+using Agricon.Core.Application.Services;
 using Agricon.Core.Model.Entities;
+using Agricon.Infrastructure.AppContext;
+using Agricon.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Agricon.Infrastructure.AppContext;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AgriconContext>(options =>
@@ -17,6 +20,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddControllers();
 builder.Services.Configure<PaystackSettings>(builder.Configuration.GetSection("Paystack"));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<IPaymentService, PaystackService>();
+builder.Services.AddHttpClient<PaystackService>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
