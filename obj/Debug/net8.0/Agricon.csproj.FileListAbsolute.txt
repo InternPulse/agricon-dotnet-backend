@@ -107,12 +107,6 @@ C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\scopedcss\b
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets\msbuild.Agricon.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets\msbuild.Agricon.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets\msbuild.build.Agricon.props
-C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Agricon.props
-C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Agricon.props
-C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\Agricon.csproj.Up2Date
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\Agricon.dll
@@ -120,3 +114,6 @@ C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\refint\Agri
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\Agricon.pdb
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\Agricon.genruntimeconfig.cache
 C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\ref\Agricon.dll
+C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\bin\Debug\net8.0\appsettings.json
+C:\Users\HomePC\Source\Repos\agricon-dotnet-backend\obj\Debug\net8.0\staticwebassets.build.json.cache

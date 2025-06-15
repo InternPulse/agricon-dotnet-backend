@@ -1,7 +1,9 @@
 ﻿using Agricon.Core.Application.Interface.Repositories;
 using Agricon.Core.Dtos;
+using Agricon.Core.Model;
 using Agricon.Core.Model.Entities;
 using Agricon.Core.Model.Enums;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,17 +13,17 @@ namespace Agricon.Core.Application.Services
     public class PaystackService : IPaymentService
     {
         private readonly HttpClient _httpClient;
-        private readonly IConfiguration _config;
+        private readonly PaystackSettings _settings;
         private readonly ITransactionRepository _repo;
 
-        public PaystackService(HttpClient httpClient, IConfiguration config, ITransactionRepository repo)
+        public PaystackService(HttpClient httpClient, IOptions<PaystackSettings> options, ITransactionRepository repo)
         {
             _httpClient = httpClient;
-            _config = config;
+            _settings = options.Value;
             _repo = repo;
         }
 
-        public async Task<PaymentResponse> InitiatePaymentAsync(PaymentRequestDto request)
+        public async Task<BaseResponse<PaymentResponse>> InitiatePaymentAsync(PaymentRequestDto request)
         {
             var payload = new
             {
@@ -30,21 +32,22 @@ namespace Agricon.Core.Application.Services
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _config["Paystack:SecretKey"]);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.SecretKey);
 
-            var res = await _httpClient.PostAsync("https://api.paystack.co/transaction/initialize", content);
-            var resBody = await res.Content.ReadAsStringAsync();
+            var response = await _httpClient.PostAsync($"{_settings.BaseUrl}/transaction/initialize", content);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-            if (!res.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                return new PaymentResponse { Status = "failed", Message = "Payment initiation failed." };
+                return BaseResponse<PaymentResponse>.FailResponse("Payment initiation failed.");
             }
 
-            dynamic json = JsonConvert.DeserializeObject<dynamic>(resBody);
+            dynamic json = JsonConvert.DeserializeObject<dynamic>(responseBody);
             string reference = json.data.reference;
             string authUrl = json.data.authorization_url;
 
-            await _repo.CreateAsync(new Transaction
+           
+            var transaction = new Transaction
             {
                 Id = Guid.NewGuid().ToString(),
                 BookingId = request.BookingId,
@@ -54,9 +57,11 @@ namespace Agricon.Core.Application.Services
                 Status = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 Reference = reference
-            });
+            };
 
-            return new PaymentResponse
+            await _repo.CreateAsync(transaction);
+
+            var result = new PaymentResponse
             {
                 Id = reference,
                 CustomerEmail = request.CustomerEmail,
@@ -66,31 +71,34 @@ namespace Agricon.Core.Application.Services
                 AuthorizationUrl = authUrl,
                 Message = "Redirect to complete payment"
             };
+
+            return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment initialized successfully");
         }
 
-        public async Task<PaymentResponse> VerifyPaymentAsync(string reference)
+        public async Task<BaseResponse<PaymentResponse>> VerifyPaymentAsync(string reference)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _config["Paystack:SecretKey"]);
-            var res = await _httpClient.GetAsync($"https://api.paystack.co/transaction/verify/{reference}");
-            var resBody = await res.Content.ReadAsStringAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.SecretKey);
 
-            if (!res.IsSuccessStatusCode)
+            var response = await _httpClient.GetAsync($"{_settings.BaseUrl}/transaction/verify/{reference}");
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
             {
-                return new PaymentResponse { Id = reference, Status = "failed", Message = "Verification failed." };
+                return BaseResponse<PaymentResponse>.FailResponse("Payment verification failed.");
             }
 
-            dynamic json = JsonConvert.DeserializeObject<dynamic>(resBody);
+            dynamic json = JsonConvert.DeserializeObject<dynamic>(responseBody);
             string status = json.data.status;
 
             var transaction = await _repo.GetByReferenceAsync(reference);
             if (transaction != null)
             {
-                transaction.Status = status == "SUCCESS" ? PaymentStatus.Success : PaymentStatus.Failed;
+                transaction.Status = status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
                 transaction.UpdatedAt = DateTime.UtcNow;
                 await _repo.SaveChangesAsync();
             }
 
-            return new PaymentResponse
+            var result = new PaymentResponse
             {
                 Id = reference,
                 CustomerEmail = json.data.customer?.email ?? "unknown",
@@ -99,7 +107,8 @@ namespace Agricon.Core.Application.Services
                 Status = status,
                 Message = "Payment verified"
             };
+
+            return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment verified successfully");
         }
     }
-
 }
