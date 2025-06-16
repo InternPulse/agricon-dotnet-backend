@@ -42,7 +42,42 @@ namespace Agricon.Infrastructure.Repository
             return await _db.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
         }
 
+        public async Task<List<Transaction>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            return await _db.Transactions
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string userId, int pageNumber, int pageSize)
+        {
+            var query = _db.Transactions
+                .Where(t => t.Id == userId); 
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PaginatedResult<Transaction>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
+        }
+
+
         public async Task SaveChangesAsync() => await _db.SaveChangesAsync();
+    }
+
+    public class PaginatedResult<T>
+    {
+        public List<T> Items { get; set; } = [];
+        public int TotalCount { get; set; }
     }
 
 }

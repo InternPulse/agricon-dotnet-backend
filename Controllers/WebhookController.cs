@@ -1,16 +1,16 @@
-﻿using Agricon.Core.Application.Interface.Repositories;
+﻿using Agricon.Core.Application.Interface.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Agricon.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/webhook")]
     public class WebhookController : ControllerBase
     {
-        private readonly IPaymentService _service;
+        private readonly ITransactionService _service;
 
-        public WebhookController(IPaymentService service)
+        public WebhookController(ITransactionService service)
         {
             _service = service;
         }

@@ -1,4 +1,5 @@
 ﻿using Agricon.Core.Application.Interface.Repositories;
+using Agricon.Core.Application.Interface.Services;
 using Agricon.Core.Dtos;
 using Agricon.Core.Model.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -6,17 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agricon.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/transaction")]
     public class TransactionController : ControllerBase
     {
+        private readonly ITransactionService _transactionService;
         private readonly ITransactionRepository _repo;
 
-        public TransactionController(ITransactionRepository repo)
+        public TransactionController(ITransactionService transactionService, ITransactionRepository repo)
         {
+            _transactionService = transactionService;
             _repo = repo;
         }
 
-        // ✅ Get transaction by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
@@ -34,6 +36,21 @@ namespace Agricon.Controllers
 
             await _repo.UpdateStatusAsync(id, model.NewStatus);
             return Ok("Transaction status updated");
+        }
+
+
+        [HttpGet("usertransactions/{userId}")]
+        public async Task<IActionResult> GetByUserTransactions(string userId, [FromQuery] int page = 1, [FromQuery] int size = 10)
+        {
+            var result = await _transactionService.GetByUserAsync(userId, page, size);
+            return Ok(result);
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllTransactions([FromQuery] int page = 1, [FromQuery] int size = 10)
+        {
+            var transactions = await _transactionService.GetAllAsync(page, size);
+            return Ok(transactions);
         }
     }
 }

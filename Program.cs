@@ -1,4 +1,5 @@
 using Agricon.Core.Application.Interface.Repositories;
+using Agricon.Core.Application.Interface.Services;
 using Agricon.Core.Application.Services;
 using Agricon.Core.Model.Entities;
 using Agricon.Infrastructure.AppContext;
@@ -20,8 +21,8 @@ builder.Services.AddControllers();
 builder.Services.Configure<PaystackSettings>(builder.Configuration.GetSection("Paystack"));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<IPaymentService, PaystackService>();
-builder.Services.AddHttpClient<PaystackService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddHttpClient<TransactionService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

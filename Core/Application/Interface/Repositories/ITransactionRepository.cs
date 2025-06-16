@@ -1,5 +1,6 @@
 ﻿using Agricon.Core.Model.Entities;
 using Agricon.Core.Model.Enums;
+using Agricon.Infrastructure.Repository;
 
 namespace Agricon.Core.Application.Interface.Repositories
 {
@@ -11,6 +12,8 @@ namespace Agricon.Core.Application.Interface.Repositories
 
         Task<Transaction> GetByIdAsync(string id); 
         Task UpdateStatusAsync(string id, PaymentStatus newStatus);
+        Task<List<Transaction>> GetAllAsync(int pageNumber, int pageSize);
+        Task<PaginatedResult<Transaction>> GetByUserAsync(string userId, int pageNumber, int pageSize);
 
     }
 

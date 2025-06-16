@@ -1,4 +1,4 @@
-﻿using Agricon.Core.Application.Interface.Repositories;
+﻿using Agricon.Core.Application.Interface.Services;
 using Agricon.Core.Application.Services;
 using Agricon.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agricon.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/payment")]
     public class PaymentController : ControllerBase
     {
-        private readonly IPaymentService _service;
+        private readonly ITransactionService _service;
 
-        public PaymentController(IPaymentService service)
+        public PaymentController(ITransactionService service)
         {
             _service = service;
         }

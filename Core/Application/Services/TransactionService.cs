@@ -1,8 +1,10 @@
 ﻿using Agricon.Core.Application.Interface.Repositories;
+using Agricon.Core.Application.Interface.Services;
 using Agricon.Core.Dtos;
 using Agricon.Core.Model;
 using Agricon.Core.Model.Entities;
 using Agricon.Core.Model.Enums;
+using Agricon.Infrastructure.Repository;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -10,13 +12,13 @@ using System.Text;
 
 namespace Agricon.Core.Application.Services
 {
-    public class PaystackService : IPaymentService
+    public class TransactionService : ITransactionService
     {
         private readonly HttpClient _httpClient;
         private readonly PaystackSettings _settings;
         private readonly ITransactionRepository _repo;
 
-        public PaystackService(HttpClient httpClient, IOptions<PaystackSettings> options, ITransactionRepository repo)
+        public TransactionService(HttpClient httpClient, IOptions<PaystackSettings> options, ITransactionRepository repo)
         {
             _httpClient = httpClient;
             _settings = options.Value;
@@ -109,6 +111,16 @@ namespace Agricon.Core.Application.Services
             };
 
             return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment verified successfully");
+        }
+
+        public async Task<List<Transaction>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            return await _repo.GetAllAsync(pageNumber, pageSize);
+        }
+
+        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string userId, int pageNumber, int pageSize)
+        {
+            return await _repo.GetByUserAsync(userId, pageNumber, pageSize);
         }
     }
 }
