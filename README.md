@@ -1,10 +1,11 @@
-# POS Padi Express Backend
+# Agricon Backend
 
-A robust backend service for managing POS operations, built with Node.js, TypeScript, and Prisma.
+A secure and scalable backend service built with ASP.NET Core for handling payments and transactions in the Agricon ecosystem.
 
 ## 🚀 Project Overview
 
-POS Padi Express provides a secure and scalable API for handling core features related to transactions, disputes, and notifications within a POS (Point of Sale) ecosystem.
+Agricon backend provides RESTful APIs for Payment initialization and verification, Transaction management (CRUD, status update) and Webhook event handling (e.g., Paystack)
+
 
 ### Key features include:
 - Transaction creation, listing, and per-agent analytics
@@ -13,22 +14,21 @@ POS Padi Express provides a secure and scalable API for handling core features r
 
 ## 🛠️ Tech Stack
 
-- **Node.js**
-- **TypeScript**
-- **Express.js**
-- **Prisma ORM**
-- **MySQL**
-- **Jest** (for testing)
+- C# / ASP.NET Core
+- Entity Framework Core
+- PostgreSQL / SQL Server
+- Swagger (OpenAPI 3.0)
+- Paystack API
+- RESTful architecture
 
 
 ## 📦 Getting Started
 
 ### Prerequisites
 
-- Node.js ≥ 16.x
-- npm or yarn
-- MySQL
-- [Prisma CLI](https://www.prisma.io/docs/reference/api-reference/command-reference)
+- .NET 8 SDK
+- PostgreSQL Server
+- Paystack Developer Account
 
 
 ## Installation Instructions
@@ -36,13 +36,13 @@ POS Padi Express provides a secure and scalable API for handling core features r
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/InternPulse/pos-padi-express-backend.git
+https://github.com/InternPulse/agricon-dotnet-backend.git
 ```
 
 2. Change into the parent directory:
 
 ```bash
-cd pos-padi-express-backend
+cd agricon
 ```
 
 3. Set appropriate values for the following Compulsory Environment Variables:
@@ -56,26 +56,20 @@ JWT_SECRET_KEY=
 PORT=5000
 ```
 
-4. Install the App dependencies:
+4. Apply Migrations:
 
 ```bash
-npm install
+dotnet ef database update
 ```
 
-5. Generate Prisma client and apply migrations:
+5. Run the Application:
 
 ```bash
-npx prisma generate
-npx prisma migrate deploy
+dotnet run
 ```
 
-6. Start the App:
 
-```bash
-npm run dev
-```
-
-The API should now be running locally at [http://localhost:5000/](http://localhost:5000/)
+The API should now be running locally at [http://localhost:7180/](http://localhost:7180/)
 
 ## 📄 API Documentation
 You can explore and test the endpoints via the live Postman documentation:
@@ -85,51 +79,27 @@ You can explore and test the endpoints via the live Postman documentation:
 ##  🔌 Available Endpoints
 Here's an overview of available routes:
 
-### 📁 Disputes
+### Webhook
 ```
-GET /api/v1/disputes – List all disputes
-
-GET /api/v1/disputes/:id – Get a single dispute by ID
-
-POST /api/v1/disputes – Create a new dispute
-
-PUT /api/v1/disputes/:id – Update a dispute
-
-DELETE /api/v1/disputes/:id – Delete a dispute
-
-GET /api/v1/disputes/stats – Get dispute statistics
-```
-### 🔔 Notifications
-```
-POST /api/v1/notifications – Create a new notification
-
-GET /api/v1/notifications – Get all notifications (with query filters)
-
-GET /api/v1/notifications/:id – Get a single notification by ID
-
-PATCH /api/v1/notifications/:id/read – Mark a notification as read
+POST /api/webhook/paystack
 ```
 
 ### 💳 Transactions
 ```
-POST /api/v1/transactions – Create a new transaction
+POST /api/payment/initiate – Create a new transaction
 
-GET /api/v1/transactions – List all transactions
+GET /api/payment/verify/:reference – verify transaction
 
-GET /api/v1/transactions/:id – Get a transaction by ID
+GET /api/v1/transaction/:id – Get a transaction by ID
 
-PUT /api/v1/transactions/:id – Update a transaction
-
-DELETE /api/v1/transactions/:id – Delete a transaction
+PUT /api/v1/transactions/:id/status – Update a transaction
 
 GET /api/v1/transactions/stats – Get overall transaction statistics
 
-GET /api/v1/transactions/agent/:agent_id/stats – Get transaction stats for a specific agent
+GET /api/v1/transaction/usertransactions/:Id – Get transaction stats for a specific booking
 ```
 #### (More endpoints available in the Postman Docs)
 
-## 🧪 Running Tests
-```npm test```
 
 ## 🧑‍💻 Contributing
 
