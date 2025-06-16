@@ -8,9 +8,13 @@ Agricon backend provides RESTful APIs for Payment initialization and verificatio
 
 
 ### Key features include:
-- Transaction creation, listing, and per-agent analytics
-- Dispute management (create, view, update, delete, statistics)
-- Notification system with read tracking
+- Create new transactions
+- View transaction details
+- Paginated listing of all transactions
+- Filter transactions by user
+- Update transaction status
+- Get transaction statistics (e.g., total by status or date)
+
 
 ## 🛠️ Tech Stack
 
