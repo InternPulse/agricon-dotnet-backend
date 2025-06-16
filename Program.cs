@@ -15,7 +15,7 @@ builder.Services.AddDbContext<AgriconContext>(options =>
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorCodesToAdd: null)));
 
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+//builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddControllers(); 
 builder.Services.Configure<PaystackSettings>(builder.Configuration.GetSection("Paystack"));
