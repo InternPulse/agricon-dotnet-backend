@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agricon.Controllers
 {
     [ApiController]
-    [Route("api/payment")]
+    [Route("api/v1/payment")]
     public class PaymentController : ControllerBase
     {
         private readonly ITransactionService _service;

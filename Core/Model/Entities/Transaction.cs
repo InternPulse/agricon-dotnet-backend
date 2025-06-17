@@ -15,7 +15,7 @@ namespace Agricon.Core.Model.Entities
 
         [Required]
         public Reason Reason { get; set; }
-        public string PaymentMethod { get; set; } 
+        public PaymentMethod PaymentMethod { get; set; } 
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
@@ -32,7 +32,6 @@ namespace Agricon.Core.Model.Entities
         [Required]
         [MaxLength(100)]
         public string Reference { get; set; }
-        //public Booking Booking { get; set; }
 
     }
 
