@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace Agricon.Controllers
 {
     [ApiController]
-    [Route("api/webhook")]
+    [Route("api/v1/webhook")]
     public class WebhookController : ControllerBase
     {
         private readonly ITransactionService _service;

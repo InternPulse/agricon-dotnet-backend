@@ -50,10 +50,10 @@ namespace Agricon.Infrastructure.Repository
                 .Take(pageSize)
                 .ToListAsync();
         }
-        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string userId, int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string bookingId, int pageNumber, int pageSize)
         {
             var query = _db.Transactions
-                .Where(t => t.Id == userId); 
+                .Where(t => t.BookingId == bookingId); 
 
             var totalCount = await query.CountAsync();
 

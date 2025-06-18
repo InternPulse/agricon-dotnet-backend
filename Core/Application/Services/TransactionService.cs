@@ -55,16 +55,17 @@ namespace Agricon.Core.Application.Services
             string reference = json.data.reference;
             string authUrl = json.data.authorization_url;
 
-           
+            var Id = Guid.NewGuid().ToString();
+
             var transaction = new Transaction
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = Id,
                 BookingId = request.BookingId,
                 Reason = request.Reason,
                 Amount = request.Amount,
-                PaymentMethod = "Paystack",
                 Status = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
+                PaymentMethod = PaymentMethod.pending,
                 Reference = reference
             };
 
@@ -72,13 +73,15 @@ namespace Agricon.Core.Application.Services
 
             var result = new PaymentResponse
             {
-                Id = reference,
+                Id = Id,
+                ReferenceId = reference,
                 CustomerEmail = request.CustomerEmail,
                 CustomerName = request.CustomerName,
                 Amount = request.Amount,
                 Status = "pending",
                 AuthorizationUrl = authUrl,
-                Message = "Redirect to complete payment"
+                Message = "Redirect to complete payment",
+                PaymentMethod = transaction.PaymentMethod.ToString(),
             };
 
             return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment initialized successfully");
@@ -98,36 +101,49 @@ namespace Agricon.Core.Application.Services
 
             dynamic json = JsonConvert.DeserializeObject<dynamic>(responseBody);
             string status = json.data.status;
+            string method = json.data.channel?.ToString()?.ToLower();
+
+            var paymentMethodEnum = method switch
+            {
+                "card" => PaymentMethod.Card,
+                "bank" => PaymentMethod.BankTransfer,
+                "ussd" => PaymentMethod.USSD,
+                _ => PaymentMethod.pending 
+            };
 
             var transaction = await _repo.GetByReferenceAsync(reference);
             if (transaction != null)
             {
                 transaction.Status = status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
+                transaction.PaymentMethod = paymentMethodEnum;
                 transaction.UpdatedAt = DateTime.UtcNow;
                 await _repo.SaveChangesAsync();
             }
 
             var result = new PaymentResponse
             {
-                Id = reference,
+                Id = transaction.Id,
+                ReferenceId = transaction.Reference,
                 CustomerEmail = json.data.customer?.email ?? "unknown",
                 CustomerName = json.data.customer?.name ?? "unknown",
                 Amount = ((decimal)json.data.amount) / 100,
                 Status = status,
-                Message = "Payment verified"
+                Message = "Payment verified",
+                PaymentMethod = paymentMethodEnum.ToString()
             };
 
             return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment verified successfully");
         }
+
 
         public async Task<List<Transaction>> GetAllAsync(int pageNumber, int pageSize)
         {
             return await _repo.GetAllAsync(pageNumber, pageSize);
         }
 
-        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string userId, int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string bookingId, int pageNumber, int pageSize)
         {
-            return await _repo.GetByUserAsync(userId, pageNumber, pageSize);
+            return await _repo.GetByUserAsync(bookingId, pageNumber, pageSize);
         }
     }
 }

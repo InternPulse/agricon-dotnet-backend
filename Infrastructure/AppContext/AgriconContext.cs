@@ -19,6 +19,9 @@ namespace Agricon.Infrastructure.AppContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.PaymentMethod)
+                .HasConversion<string>();
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
@@ -27,12 +30,11 @@ namespace Agricon.Infrastructure.AppContext
                     if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
                     {
                         property.SetValueConverter(new ValueConverter<DateTime, DateTime>(
-                        v => v.ToUniversalTime(),
+                            v => v.ToUniversalTime(),
                             v => DateTime.SpecifyKind(v, DateTimeKind.Utc)));
                     }
                 }
             }
-
         }
 
     }

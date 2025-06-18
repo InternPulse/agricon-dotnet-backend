@@ -39,10 +39,10 @@ namespace Agricon.Controllers
         }
 
 
-        [HttpGet("usertransactions/{userId}")]
-        public async Task<IActionResult> GetByUserTransactions(string userId, [FromQuery] int page = 1, [FromQuery] int size = 10)
+        [HttpGet("usertransactions/{bookingId}")]
+        public async Task<IActionResult> GetByUserTransactions(string bookingId, [FromQuery] int page = 1, [FromQuery] int size = 10)
         {
-            var result = await _transactionService.GetByUserAsync(userId, page, size);
+            var result = await _transactionService.GetByUserAsync(bookingId, page, size);
             return Ok(result);
         }
 
