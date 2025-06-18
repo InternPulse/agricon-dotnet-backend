@@ -365,3 +365,4 @@ appsettings.json
 bin
 obj
 .vs/
+appsettings.Development.json

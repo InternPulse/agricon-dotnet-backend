@@ -17,16 +17,23 @@ namespace Agricon.Core.Application.Services
         private readonly HttpClient _httpClient;
         private readonly PaystackSettings _settings;
         private readonly ITransactionRepository _repo;
+        private readonly IBookingRepository _bookingRepository;
 
-        public TransactionService(HttpClient httpClient, IOptions<PaystackSettings> options, ITransactionRepository repo)
+        public TransactionService(HttpClient httpClient, IOptions<PaystackSettings> options, ITransactionRepository repo, IBookingRepository bookingRepository)
         {
             _httpClient = httpClient;
             _settings = options.Value;
             _repo = repo;
+            _bookingRepository = bookingRepository;
         }
 
         public async Task<BaseResponse<PaymentResponse>> InitiatePaymentAsync(PaymentRequestDto request)
         {
+            var bookingId = _bookingRepository.GetByIdAsync(request.BookingId);
+            if(bookingId == null)
+            {
+                return BaseResponse<PaymentResponse>.FailResponse("Booking not found.");
+            }
             var payload = new
             {
                 email = request.CustomerEmail,

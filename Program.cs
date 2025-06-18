@@ -20,8 +20,9 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddControllers(); 
 builder.Services.Configure<PaystackSettings>(builder.Configuration.GetSection("Paystack"));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddTransient<IBookingRepository, BookingRespository>();
+builder.Services.AddTransient<ITransactionRepository, TransactionRepository>();
+builder.Services.AddTransient<ITransactionService, TransactionService>();
 builder.Services.AddHttpClient<TransactionService>();
 
 builder.Services.AddEndpointsApiExplorer();
