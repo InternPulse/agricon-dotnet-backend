@@ -10,10 +10,10 @@ namespace Agricon.Core.Application.Interface.Repositories
         Task<Transaction> GetByReferenceAsync(string reference);
         Task SaveChangesAsync();
 
-        Task<Transaction> GetByIdAsync(string id); 
-        Task UpdateStatusAsync(string id, PaymentStatus newStatus);
-        Task<List<Transaction>> GetAllAsync(int pageNumber, int pageSize);
-        Task<PaginatedResult<Transaction>> GetByUserAsync(string userId, int pageNumber, int pageSize);
+        Task<Transaction> GetByIdAsync(int id); 
+        Task UpdateStatusAsync(int id, PaymentStatus newStatus);
+        Task<PaginatedResult<Transaction>> GetAllAsync(int pageNumber, int pageSize);
+        Task<PaginatedResult<Transaction>> GetByUserAsync(int userId, int pageNumber, int pageSize);
 
     }
 

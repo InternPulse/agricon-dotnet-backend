@@ -20,7 +20,7 @@ namespace Agricon.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id)
+        public async Task<IActionResult> GetById(int id)
         {
             var transaction = await _repo.GetByIdAsync(id);
             if (transaction == null)
@@ -29,7 +29,7 @@ namespace Agricon.Controllers
             return Ok(transaction);
         }
         [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(string id, [FromBody] UpdateStatusDto model)
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto model)
         {
             if (!Enum.IsDefined(typeof(PaymentStatus), model.NewStatus))
                 return BadRequest("Invalid status");
@@ -40,7 +40,7 @@ namespace Agricon.Controllers
 
 
         [HttpGet("usertransactions/{bookingId}")]
-        public async Task<IActionResult> GetByUserTransactions(string bookingId, [FromQuery] int page = 1, [FromQuery] int size = 10)
+        public async Task<IActionResult> GetByUserTransactions(int bookingId, [FromQuery] int page = 1, [FromQuery] int size = 10)
         {
             var result = await _transactionService.GetByUserAsync(bookingId, page, size);
             return Ok(result);

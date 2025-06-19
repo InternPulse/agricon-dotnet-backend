@@ -5,7 +5,7 @@
         Card = 1,
         BankTransfer = 2,
         USSD = 3,
-            pending = 4,
+        pending = 4,
     }
 
 }

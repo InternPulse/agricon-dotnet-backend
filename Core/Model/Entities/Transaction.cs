@@ -4,36 +4,44 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Agricon.Core.Model.Entities
 {
+    [Table("Transaction")]
     public class Transaction 
     {
         [Key]
         [Required]
-        public string Id { get; set; }
+        [Column("id")]
+        public int Id { get; set; }
+
         [Required]
         [ForeignKey("Booking")]
-        public string BookingId { get; set; }
+        [Column("bookingId")]
+        public int BookingId { get; set; }
 
-        [Required]
+        [Column("description")]
         public Reason Reason { get; set; }
-        public PaymentMethod PaymentMethod { get; set; } 
+
+        [Column("paymentMethod")]
+        public PaymentMethod PaymentMethod { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Amount { get; set; }
+        [Column("amount", TypeName = "decimal(18,2)")]
+        public double Amount { get; set; }
 
         [Required]
+        [Column("status")]
         public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
 
         [Required]
+        [Column("createdAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        [Column("updatedAt")]
         public DateTime? UpdatedAt { get; set; }
 
         [Required]
         [MaxLength(100)]
+        [Column("reference")]
         public string Reference { get; set; }
 
     }
-
-
 }

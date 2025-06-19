@@ -29,15 +29,19 @@ namespace Agricon.Core.Application.Services
 
         public async Task<BaseResponse<PaymentResponse>> InitiatePaymentAsync(PaymentRequestDto request)
         {
-            var bookingId = _bookingRepository.GetByIdAsync(request.BookingId);
-            if(bookingId == null)
+            var booking = await _bookingRepository.GetByIdAsync(request.BookingId);
+            if(booking == null)
             {
                 return BaseResponse<PaymentResponse>.FailResponse("Booking not found.");
+            }
+            if (booking.Paid == true)
+            {
+                return BaseResponse<PaymentResponse>.FailResponse("Payment has been made for this booking");
             }
             var payload = new
             {
                 email = request.CustomerEmail,
-                amount = (int)(request.Amount * 100)
+                amount = (int)(booking.Amount * 100)
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
@@ -55,29 +59,26 @@ namespace Agricon.Core.Application.Services
             string reference = json.data.reference;
             string authUrl = json.data.authorization_url;
 
-            var Id = Guid.NewGuid().ToString();
-
             var transaction = new Transaction
             {
-                Id = Id,
                 BookingId = request.BookingId,
-                Reason = request.Reason,
-                Amount = request.Amount,
+                Amount = booking.Amount,
                 Status = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 PaymentMethod = PaymentMethod.pending,
+                Reason = request.Reason,
                 Reference = reference
             };
 
-            await _repo.CreateAsync(transaction);
+            var trans = await _repo.CreateAsync(transaction);
 
             var result = new PaymentResponse
             {
-                Id = Id,
+                Id = trans.Id,
                 ReferenceId = reference,
                 CustomerEmail = request.CustomerEmail,
                 CustomerName = request.CustomerName,
-                Amount = request.Amount,
+                Amount = (decimal)booking.Amount,
                 Status = "pending",
                 AuthorizationUrl = authUrl,
                 Message = "Redirect to complete payment",
@@ -108,7 +109,7 @@ namespace Agricon.Core.Application.Services
                 "card" => PaymentMethod.Card,
                 "bank" => PaymentMethod.BankTransfer,
                 "ussd" => PaymentMethod.USSD,
-                _ => PaymentMethod.pending 
+                _ => PaymentMethod.pending
             };
 
             var transaction = await _repo.GetByReferenceAsync(reference);
@@ -117,33 +118,65 @@ namespace Agricon.Core.Application.Services
                 transaction.Status = status == "success" ? PaymentStatus.Success : PaymentStatus.Failed;
                 transaction.PaymentMethod = paymentMethodEnum;
                 transaction.UpdatedAt = DateTime.UtcNow;
+
+                if (status == "success")
+                {
+                    await _bookingRepository.UpdatePaidAsync(transaction.BookingId, true);
+                }
                 await _repo.SaveChangesAsync();
             }
 
             var result = new PaymentResponse
             {
                 Id = transaction.Id,
-                ReferenceId = transaction.Reference,
                 CustomerEmail = json.data.customer?.email ?? "unknown",
                 CustomerName = json.data.customer?.name ?? "unknown",
                 Amount = ((decimal)json.data.amount) / 100,
                 Status = status,
                 Message = "Payment verified",
-                PaymentMethod = paymentMethodEnum.ToString()
+                PaymentMethod = paymentMethodEnum.ToString(),
+                ReferenceId = transaction.Reference,
             };
 
             return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment verified successfully");
         }
 
 
-        public async Task<List<Transaction>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Transaction>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _repo.GetAllAsync(pageNumber, pageSize);
+            var transactions = await _repo.GetAllAsync(pageNumber, pageSize);
+
+            if (transactions.TotalCount == 0)
+            {
+                return new PaginatedResult<Transaction>
+                {
+                    Items = new List<Transaction>(),
+                    TotalCount = 0,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+            }
+
+            return transactions;
         }
 
-        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string bookingId, int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Transaction>> GetByUserAsync(int bookingId, int pageNumber, int pageSize)
         {
-            return await _repo.GetByUserAsync(bookingId, pageNumber, pageSize);
+            var transactions = await _repo.GetByUserAsync(bookingId, pageNumber, pageSize);
+
+            if (transactions.TotalCount == 0)
+            {
+                return new PaginatedResult<Transaction>
+                {
+                    Items = new List<Transaction>(),
+                    TotalCount = 0,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+            }
+
+            return transactions;
         }
+
     }
 }

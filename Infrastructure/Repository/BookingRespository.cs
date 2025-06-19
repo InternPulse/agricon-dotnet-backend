@@ -15,9 +15,24 @@ namespace Agricon.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<Booking?> GetByIdAsync(string Id)
+        public async Task<Booking?> GetByIdAsync(int Id)
         {
             return await _context.Bookings.FirstOrDefaultAsync(p => p.Id == Id);
+        }
+        public async Task<bool> UpdatePaidAsync(int bookingId, bool isPaid)
+        {
+            var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (booking == null)
+            {
+                return false;
+            }
+
+            booking.Paid = isPaid;
+            _context.Bookings.Update(booking);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
     }

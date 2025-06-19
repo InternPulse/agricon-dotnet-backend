@@ -35,6 +35,9 @@ namespace Agricon.Infrastructure.AppContext
                     }
                 }
             }
+
+
+            //modelBuilder.Entity<Transaction>().Property<int>("id").ValueGeneratedOnAdd();
         }
 
     }

@@ -22,12 +22,12 @@ namespace Agricon.Infrastructure.Repository
             return transaction;
         }
 
-        public async Task<Transaction> GetByIdAsync(string id)
+        public async Task<Transaction> GetByIdAsync(int id)
         {
             return await _db.Transactions.FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task UpdateStatusAsync(string id, PaymentStatus newStatus)
+        public async Task UpdateStatusAsync(int id, PaymentStatus newStatus)
         {
             var transaction = await GetByIdAsync(id);
             if (transaction != null)
@@ -37,20 +37,32 @@ namespace Agricon.Infrastructure.Repository
                 await SaveChangesAsync();
             }
         }
+
         public async Task<Transaction> GetByReferenceAsync(string reference)
         {
             return await _db.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
         }
 
-        public async Task<List<Transaction>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<Transaction>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _db.Transactions
+            var totalCount = await _db.Transactions.CountAsync();
+
+            var items = await _db.Transactions
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+
+            return new PaginatedResult<Transaction>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
-        public async Task<PaginatedResult<Transaction>> GetByUserAsync(string bookingId, int pageNumber, int pageSize)
+
+        public async Task<PaginatedResult<Transaction>> GetByUserAsync(int bookingId, int pageNumber, int pageSize)
         {
             var query = _db.Transactions
                 .Where(t => t.BookingId == bookingId); 
@@ -66,7 +78,9 @@ namespace Agricon.Infrastructure.Repository
             return new PaginatedResult<Transaction>
             {
                 Items = items,
-                TotalCount = totalCount
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             };
         }
 
@@ -78,6 +92,8 @@ namespace Agricon.Infrastructure.Repository
     {
         public List<T> Items { get; set; } = [];
         public int TotalCount { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
     }
 
 }

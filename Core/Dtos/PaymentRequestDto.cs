@@ -4,11 +4,10 @@ namespace Agricon.Core.Dtos
 {
     public class PaymentRequestDto
     {
-        public string BookingId { get; set; }
+        public int BookingId { get; set; }
         public Reason Reason { get; set; }
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
-        public decimal Amount { get; set; }
     }
 
 }
