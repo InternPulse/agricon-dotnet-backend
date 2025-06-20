@@ -7,7 +7,7 @@ namespace Agricon.Core.Application.Interface.Repositories
     public interface ITransactionRepository
     {
         Task<Transaction> CreateAsync(Transaction transaction);
-        Task<Transaction> GetByReferenceAsync(string reference);
+        Task<Transaction> GetByReferenceAsync(Guid reference);
         Task SaveChangesAsync();
 
         Task<Transaction> GetByIdAsync(int id); 

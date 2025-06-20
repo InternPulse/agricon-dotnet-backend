@@ -40,8 +40,8 @@ namespace Agricon.Core.Model.Entities
 
         [Required]
         [MaxLength(100)]
-        [Column("reference")]
-        public string Reference { get; set; }
+        [Column("ref")]
+        public Guid Reference { get; set; }
 
     }
 }

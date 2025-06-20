@@ -38,7 +38,7 @@ namespace Agricon.Infrastructure.Repository
             }
         }
 
-        public async Task<Transaction> GetByReferenceAsync(string reference)
+        public async Task<Transaction> GetByReferenceAsync(Guid reference)
         {
             return await _db.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
         }

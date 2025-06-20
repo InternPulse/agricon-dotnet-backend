@@ -2,12 +2,14 @@ using Agricon.Core.Application.Interface.Repositories;
 using Agricon.Core.Application.Interface.Services;
 using Agricon.Core.Application.Services;
 using Agricon.Core.Model.Entities;
+using Agricon.Core.Model.Enums;
 using Agricon.Infrastructure.AppContext;
 using Agricon.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
-
+NpgsqlConnection.GlobalTypeMapper.MapEnum<Reason>("description");
 builder.Services.AddDbContext<AgriconContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
         npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
@@ -15,7 +17,7 @@ builder.Services.AddDbContext<AgriconContext>(options =>
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorCodesToAdd: null)));
 
-//builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
 
 builder.Services.AddControllers(); 
 builder.Services.Configure<PaystackSettings>(builder.Configuration.GetSection("Paystack"));

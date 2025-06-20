@@ -28,7 +28,7 @@ namespace Agricon.Controllers
 
             if (eventType == "charge.success" && status == "success")
             {
-                await _service.VerifyPaymentAsync(reference);
+                await _service.VerifyPaymentAsync(Guid.Parse(reference));
             }
 
             return Ok();

@@ -6,6 +6,7 @@ using System.Security.Cryptography.Xml;
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Agricon.Core.Model.Enums;
 
 namespace Agricon.Infrastructure.AppContext
 {
@@ -23,6 +24,12 @@ namespace Agricon.Infrastructure.AppContext
                 .Property(t => t.PaymentMethod)
                 .HasConversion<string>();
 
+            modelBuilder.HasPostgresEnum<Reason>();
+            modelBuilder.Entity<Transaction>()
+                        .Property(t => t.Reason)
+                        .HasColumnType("description");
+
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 foreach (var property in entityType.GetProperties())
@@ -35,9 +42,6 @@ namespace Agricon.Infrastructure.AppContext
                     }
                 }
             }
-
-
-            //modelBuilder.Entity<Transaction>().Property<int>("id").ValueGeneratedOnAdd();
         }
 
     }

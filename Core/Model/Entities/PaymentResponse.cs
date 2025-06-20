@@ -9,7 +9,7 @@
         public string Status { get; set; }
         public string AuthorizationUrl { get; set; }
         public string Message { get; set; }
-        public string ReferenceId { get; set; }
+        public Guid Reference { get; set; }
         public string PaymentMethod { get; set; }
     }
 

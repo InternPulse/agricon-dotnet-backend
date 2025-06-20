@@ -25,7 +25,7 @@ namespace Agricon.Controllers
 
 
         [HttpGet("verify/{reference}")]
-        public async Task<IActionResult> Verify(string reference)
+        public async Task<IActionResult> Verify(Guid reference)
         {
             var result = await _service.VerifyPaymentAsync(reference);
             return result.Success ? Ok(result) : BadRequest(result);

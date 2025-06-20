@@ -38,10 +38,12 @@ namespace Agricon.Core.Application.Services
             {
                 return BaseResponse<PaymentResponse>.FailResponse("Payment has been made for this booking");
             }
+            string reference = Guid.NewGuid().ToString();
             var payload = new
             {
                 email = request.CustomerEmail,
-                amount = (int)(booking.Amount * 100)
+                amount = (int)(booking.Amount * 100),
+                reference = reference
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
@@ -56,7 +58,6 @@ namespace Agricon.Core.Application.Services
             }
 
             dynamic json = JsonConvert.DeserializeObject<dynamic>(responseBody);
-            string reference = json.data.reference;
             string authUrl = json.data.authorization_url;
 
             var transaction = new Transaction
@@ -66,8 +67,8 @@ namespace Agricon.Core.Application.Services
                 Status = PaymentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 PaymentMethod = PaymentMethod.pending,
-                Reason = request.Reason,
-                Reference = reference
+                Reason = (Reason)request.Reason,
+                Reference = Guid.Parse(reference)
             };
 
             var trans = await _repo.CreateAsync(transaction);
@@ -75,7 +76,7 @@ namespace Agricon.Core.Application.Services
             var result = new PaymentResponse
             {
                 Id = trans.Id,
-                ReferenceId = reference,
+                Reference = Guid.Parse(reference),
                 CustomerEmail = request.CustomerEmail,
                 CustomerName = request.CustomerName,
                 Amount = (decimal)booking.Amount,
@@ -88,7 +89,7 @@ namespace Agricon.Core.Application.Services
             return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment initialized successfully");
         }
 
-        public async Task<BaseResponse<PaymentResponse>> VerifyPaymentAsync(string reference)
+        public async Task<BaseResponse<PaymentResponse>> VerifyPaymentAsync(Guid reference)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.SecretKey);
 
@@ -135,7 +136,7 @@ namespace Agricon.Core.Application.Services
                 Status = status,
                 Message = "Payment verified",
                 PaymentMethod = paymentMethodEnum.ToString(),
-                ReferenceId = transaction.Reference,
+                Reference = transaction.Reference,
             };
 
             return BaseResponse<PaymentResponse>.SuccessResponse(result, "Payment verified successfully");
