@@ -6,6 +6,7 @@ using System.Security.Cryptography.Xml;
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Agricon.Core.Model.Enums;
 
 namespace Agricon.Infrastructure.AppContext
 {
@@ -35,9 +36,6 @@ namespace Agricon.Infrastructure.AppContext
                     }
                 }
             }
-
-
-            //modelBuilder.Entity<Transaction>().Property<int>("id").ValueGeneratedOnAdd();
         }
 
     }

@@ -4,6 +4,6 @@ namespace Agricon.Core.Dtos
 {
     public class UpdateStatusDto
     {
-        public PaymentStatus NewStatus { get; set; }
+        public TransactionStatus NewStatus { get; set; }
     }
 }

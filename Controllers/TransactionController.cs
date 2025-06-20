@@ -31,7 +31,7 @@ namespace Agricon.Controllers
         [HttpPut("{id}/status")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateStatusDto model)
         {
-            if (!Enum.IsDefined(typeof(PaymentStatus), model.NewStatus))
+            if (!Enum.IsDefined(typeof(TransactionStatus), model.NewStatus))
                 return BadRequest("Invalid status");
 
             await _repo.UpdateStatusAsync(id, model.NewStatus);

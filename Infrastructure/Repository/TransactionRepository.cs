@@ -27,12 +27,12 @@ namespace Agricon.Infrastructure.Repository
             return await _db.Transactions.FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task UpdateStatusAsync(int id, PaymentStatus newStatus)
+        public async Task UpdateStatusAsync(int id, TransactionStatus newStatus)
         {
             var transaction = await GetByIdAsync(id);
             if (transaction != null)
             {
-                transaction.Status = newStatus;
+                transaction.TransactionStatus = newStatus;
                 transaction.UpdatedAt = DateTime.UtcNow;
                 await SaveChangesAsync();
             }
@@ -43,7 +43,7 @@ namespace Agricon.Infrastructure.Repository
             return await _db.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
         }
 
-        public async Task<PaginatedResult<Transaction>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedResult<PaymentDto>> GetAllAsync(int pageNumber, int pageSize)
         {
             var totalCount = await _db.Transactions.CountAsync();
 
@@ -51,9 +51,19 @@ namespace Agricon.Infrastructure.Repository
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Select(t => new PaymentDto
+                {
+                    Id = t.Id,
+                    Amount = (decimal)t.Amount,
+                    Status = t.TransactionStatus.ToString(),
+                    PaymentMethod = t.PaymentMethod.ToString(),
+                    Description = t.TransactionDescription.ToString(),
+                    Reference = t.Reference,
+                    CreatedAt = t.CreatedAt
+                })
                 .ToListAsync();
 
-            return new PaginatedResult<Transaction>
+            return new PaginatedResult<PaymentDto>
             {
                 Items = items,
                 TotalCount = totalCount,
@@ -62,10 +72,10 @@ namespace Agricon.Infrastructure.Repository
             };
         }
 
-        public async Task<PaginatedResult<Transaction>> GetByUserAsync(int bookingId, int pageNumber, int pageSize)
+        public async Task<PaginatedResult<PaymentDto>> GetByUserAsync(int bookingId, int pageNumber, int pageSize)
         {
             var query = _db.Transactions
-                .Where(t => t.BookingId == bookingId); 
+                .Where(t => t.BookingId == bookingId);
 
             var totalCount = await query.CountAsync();
 
@@ -73,9 +83,19 @@ namespace Agricon.Infrastructure.Repository
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Select(t => new PaymentDto
+                {
+                    Id = t.Id,
+                    Amount = (decimal)t.Amount,
+                    Status = t.TransactionStatus.ToString(),
+                    PaymentMethod = t.PaymentMethod.ToString(),
+                    Description = t.TransactionDescription.ToString(),
+                    Reference = t.Reference,
+                    CreatedAt = t.CreatedAt
+                })
                 .ToListAsync();
 
-            return new PaginatedResult<Transaction>
+            return new PaginatedResult<PaymentDto>
             {
                 Items = items,
                 TotalCount = totalCount,
