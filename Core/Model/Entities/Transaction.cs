@@ -18,7 +18,7 @@ namespace Agricon.Core.Model.Entities
         public int BookingId { get; set; }
 
         [Column("description")]
-        public Reason Reason { get; set; }
+        public TransactionDescription TransactionDescription { get; set; }
 
         [Column("paymentMethod")]
         public PaymentMethod PaymentMethod { get; set; }
@@ -29,7 +29,7 @@ namespace Agricon.Core.Model.Entities
 
         [Required]
         [Column("status")]
-        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+        public TransactionStatus TransactionStatus { get; set; } 
 
         [Required]
         [Column("createdAt")]
@@ -41,7 +41,7 @@ namespace Agricon.Core.Model.Entities
         [Required]
         [MaxLength(100)]
         [Column("ref")]
-        public Guid Reference { get; set; }
+        public string Reference { get; set; }
 
     }
 }

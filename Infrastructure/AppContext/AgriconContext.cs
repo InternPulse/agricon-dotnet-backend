@@ -24,12 +24,6 @@ namespace Agricon.Infrastructure.AppContext
                 .Property(t => t.PaymentMethod)
                 .HasConversion<string>();
 
-            modelBuilder.HasPostgresEnum<Reason>();
-            modelBuilder.Entity<Transaction>()
-                        .Property(t => t.Reason)
-                        .HasColumnType("description");
-
-
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 foreach (var property in entityType.GetProperties())

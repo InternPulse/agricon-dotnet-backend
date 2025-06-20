@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
-NpgsqlConnection.GlobalTypeMapper.MapEnum<Reason>("description");
 builder.Services.AddDbContext<AgriconContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
         npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
