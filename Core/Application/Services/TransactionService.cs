@@ -75,6 +75,7 @@ namespace Agricon.Core.Application.Services
             {
                 Id = trans.Id,
                 Reference = reference,
+                BookingId= request.BookingId,
                 CustomerEmail = request.CustomerEmail,
                 Amount = (decimal)booking.Amount,
                 Status = "pending",
@@ -128,6 +129,7 @@ namespace Agricon.Core.Application.Services
             var result = new PaymentResponse
             {
                 Id = transaction.Id,
+                BookingId = transaction.BookingId,
                 CustomerEmail = json.data.customer?.email ?? "unknown",
                 Amount = ((decimal)json.data.amount) / 100,
                 Status = status,

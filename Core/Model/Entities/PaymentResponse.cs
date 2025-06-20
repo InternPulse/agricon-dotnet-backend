@@ -3,6 +3,7 @@
     public class PaymentResponse
     {
         public int Id { get; set; }
+        public int BookingId { get; set; }
         public string CustomerEmail { get; set; }
         public decimal Amount { get; set; }
         public string Status { get; set; }
@@ -16,6 +17,7 @@
     public class PaymentDto
     {
         public int Id { get; set; }
+        public int BookingId { get; set; }
         public decimal Amount { get; set; }
         public string Status { get; set; }
         public string Reference { get; set; }

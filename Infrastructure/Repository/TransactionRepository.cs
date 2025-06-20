@@ -55,6 +55,7 @@ namespace Agricon.Infrastructure.Repository
                 {
                     Id = t.Id,
                     Amount = (decimal)t.Amount,
+                    BookingId = t.BookingId,
                     Status = t.TransactionStatus.ToString(),
                     PaymentMethod = t.PaymentMethod.ToString(),
                     Description = t.TransactionDescription.ToString(),
@@ -87,6 +88,7 @@ namespace Agricon.Infrastructure.Repository
                 {
                     Id = t.Id,
                     Amount = (decimal)t.Amount,
+                    BookingId = t.BookingId,
                     Status = t.TransactionStatus.ToString(),
                     PaymentMethod = t.PaymentMethod.ToString(),
                     Description = t.TransactionDescription.ToString(),
