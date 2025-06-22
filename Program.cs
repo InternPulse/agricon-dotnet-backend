@@ -18,7 +18,7 @@ builder.Services.AddDbContext<AgriconContext>(options =>
 
 
 
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();
 builder.Services.Configure<PaystackSettings>(builder.Configuration.GetSection("Paystack"));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IBookingRepository, BookingRespository>();
@@ -28,6 +28,7 @@ builder.Services.AddHttpClient<TransactionService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddCors(cors =>

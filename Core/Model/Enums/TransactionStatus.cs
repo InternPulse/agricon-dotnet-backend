@@ -2,10 +2,10 @@
 {
     public enum TransactionStatus
     {
-        PENDING,
-        COMPLETED,
-        FAILED,
-        REFUNDED
+        Pending =1,
+        Completed,
+        Failed,
+        Refunded
     }
 
 }

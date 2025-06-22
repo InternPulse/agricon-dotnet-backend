@@ -3,9 +3,9 @@ namespace Agricon.Core.Model.Enums
 {
     public enum TransactionDescription
     {
-        BOOKING,
-        EXTENSION,
-        PENALTY,
-        OTHER
+        Booking = 1,
+        Extension,
+        Penalty,
+        Other
     }
 }

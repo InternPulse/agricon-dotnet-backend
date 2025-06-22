@@ -24,6 +24,14 @@ namespace Agricon.Infrastructure.AppContext
                 .Property(t => t.PaymentMethod)
                 .HasConversion<string>();
 
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Description)
+                .HasConversion<string>(); 
+
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Status)
+                .HasConversion<string>(); 
+
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 foreach (var property in entityType.GetProperties())
@@ -36,7 +44,23 @@ namespace Agricon.Infrastructure.AppContext
                     }
                 }
             }
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.ToTable("Transaction");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.BookingId).HasColumnName("bookingId");
+                entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.PaymentMethod).HasColumnName("paymentMethod");
+                entity.Property(e => e.Amount).HasColumnName("amount");
+                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.CreatedAt).HasColumnName("createdAt");
+                entity.Property(e => e.UpdatedAt).HasColumnName("updatedAt");
+                entity.Property(e => e.Reference).HasColumnName("ref");
+            });
         }
+
 
     }
 }

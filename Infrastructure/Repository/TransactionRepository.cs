@@ -32,7 +32,7 @@ namespace Agricon.Infrastructure.Repository
             var transaction = await GetByIdAsync(id);
             if (transaction != null)
             {
-                transaction.TransactionStatus = newStatus;
+                transaction.Status = newStatus;
                 transaction.UpdatedAt = DateTime.UtcNow;
                 await SaveChangesAsync();
             }
@@ -56,9 +56,9 @@ namespace Agricon.Infrastructure.Repository
                     Id = t.Id,
                     Amount = (decimal)t.Amount,
                     BookingId = t.BookingId,
-                    Status = t.TransactionStatus.ToString(),
+                    Status = t.Status.ToString(),
                     PaymentMethod = t.PaymentMethod.ToString(),
-                    Description = t.TransactionDescription.ToString(),
+                    Description = t.Description.ToString(),
                     Reference = t.Reference,
                     CreatedAt = t.CreatedAt
                 })
@@ -89,9 +89,9 @@ namespace Agricon.Infrastructure.Repository
                     Id = t.Id,
                     Amount = (decimal)t.Amount,
                     BookingId = t.BookingId,
-                    Status = t.TransactionStatus.ToString(),
+                    Status = t.Status.ToString(),
                     PaymentMethod = t.PaymentMethod.ToString(),
-                    Description = t.TransactionDescription.ToString(),
+                    Description = t.Description.ToString(),
                     Reference = t.Reference,
                     CreatedAt = t.CreatedAt
                 })

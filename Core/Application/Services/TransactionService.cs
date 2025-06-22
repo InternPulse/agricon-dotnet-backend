@@ -5,6 +5,7 @@ using Agricon.Core.Model;
 using Agricon.Core.Model.Entities;
 using Agricon.Core.Model.Enums;
 using Agricon.Infrastructure.Repository;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -58,14 +59,31 @@ namespace Agricon.Core.Application.Services
             dynamic json = JsonConvert.DeserializeObject<dynamic>(responseBody);
             string authUrl = json.data.authorization_url;
             string reference = json.data.reference;
+
+            var paymentDescEnum = request.TransactionDescription.ToLower() switch
+            {
+                "booking" => TransactionDescription.Booking,
+                "penalty" => TransactionDescription.Penalty,
+                "extension" => TransactionDescription.Extension,
+                "other" => TransactionDescription.Other,
+                _ => throw new ArgumentException("Invalid transaction description.")
+            };
+            TransactionStatus statusEnum;
+
+            if (!Enum.TryParse<TransactionStatus>(TransactionStatus.Pending.ToString(), ignoreCase: true, out statusEnum))
+            {
+                return BaseResponse<PaymentResponse>.FailResponse("Invalid transaction status.");
+            }
+
+
             var transaction = new Transaction
             {
                 BookingId = request.BookingId,
                 Amount = booking.Amount,
-                TransactionStatus = TransactionStatus.PENDING,
+                Status = TransactionStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
                 PaymentMethod = PaymentMethod.pending,
-                TransactionDescription = request.TransactionDescription,
+                Description = paymentDescEnum,
                 Reference = reference
             };
 
@@ -115,7 +133,7 @@ namespace Agricon.Core.Application.Services
             var transaction = await _repo.GetByReferenceAsync(reference);
             if (transaction != null)
             {
-                transaction.TransactionStatus = status == "success" ? TransactionStatus.COMPLETED : TransactionStatus.FAILED;
+                transaction.Status = status == "success" ? TransactionStatus.Completed : TransactionStatus.Failed;
                 transaction.PaymentMethod = paymentMethodEnum;
                 transaction.UpdatedAt = DateTime.UtcNow;
 
@@ -135,7 +153,7 @@ namespace Agricon.Core.Application.Services
                 Status = status,
                 Message = "Payment verified",
                 PaymentMethod = paymentMethodEnum.ToString(),
-                Description = transaction.TransactionDescription.ToString(),
+                Description = transaction.Description.ToString(),
                 Reference = transaction.Reference,
             };
 
