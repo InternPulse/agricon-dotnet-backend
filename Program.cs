@@ -34,7 +34,7 @@ builder.Services.AddCors(cors =>
 {
     cors.AddPolicy("Agricon", pol =>
     {
-        pol.WithOrigins("http://localhost:3001", "http://localhost:5173")
+        pol.WithOrigins("http://localhost:3001", "http://localhost:5173", "https://localhost:3001", "https://localhost:5173")
            .AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials();
