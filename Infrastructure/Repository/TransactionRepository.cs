@@ -3,6 +3,7 @@ using Agricon.Core.Model.Entities;
 using Agricon.Core.Model.Enums;
 using Agricon.Infrastructure.AppContext;
 using Microsoft.EntityFrameworkCore;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace Agricon.Infrastructure.Repository
 {
@@ -108,6 +109,11 @@ namespace Agricon.Infrastructure.Repository
 
 
         public async Task SaveChangesAsync() => await _db.SaveChangesAsync();
+
+        public async Task<Transaction> GetByBookingIdAsync(int bookingid)
+        {
+            return await _db.Transactions.FirstOrDefaultAsync(t => t.BookingId == bookingid);
+        }
     }
 
     public class PaginatedResult<T>

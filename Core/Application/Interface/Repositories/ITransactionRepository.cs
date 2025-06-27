@@ -11,6 +11,7 @@ namespace Agricon.Core.Application.Interface.Repositories
         Task SaveChangesAsync();
 
         Task<Transaction> GetByIdAsync(int id); 
+        Task<Transaction> GetByBookingIdAsync(int bookingid); 
         Task UpdateStatusAsync(int id, TransactionStatus newStatus);
         Task<PaginatedResult<PaymentDto>> GetAllAsync(int pageNumber, int pageSize);
         Task<PaginatedResult<PaymentDto>> GetByUserAsync(int userId, int pageNumber, int pageSize);

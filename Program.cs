@@ -16,8 +16,6 @@ builder.Services.AddDbContext<AgriconContext>(options =>
             maxRetryDelay: TimeSpan.FromSeconds(30),
             errorCodesToAdd: null)));
 
-
-
 builder.Services.AddControllers();
 builder.Services.Configure<PaystackSettings>(builder.Configuration.GetSection("Paystack"));
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -31,11 +29,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
 
+// ? Correct CORS Configuration
 builder.Services.AddCors(cors =>
 {
     cors.AddPolicy("Agricon", pol =>
     {
-        pol.WithOrigins()
+        pol.WithOrigins("http://localhost:3001", "http://localhost:5173")
            .AllowAnyHeader()
            .AllowAnyMethod()
            .AllowCredentials();
@@ -70,6 +69,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseSession();
+app.UseCors("Agricon"); 
 app.UseAuthorization();
 
 app.MapControllers();

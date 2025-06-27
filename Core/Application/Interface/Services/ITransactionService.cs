@@ -11,6 +11,9 @@ namespace Agricon.Core.Application.Interface.Services
         Task<BaseResponse<PaymentResponse>> VerifyPaymentAsync(string reference);
         Task<PaginatedResult<PaymentDto>> GetAllAsync(int pageNumber, int pageSize);
         Task<PaginatedResult<PaymentDto>> GetByUserAsync(int userId, int pageNumber, int pageSize);
+        Task<byte[]> GenerateTransactionReceiptByBookingIdAsync(int bookingId);
+        Task<Transaction> GetByBookingIdAsync(int bookingid);
+
     }
 
 }

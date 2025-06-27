@@ -5,11 +5,16 @@ using Agricon.Core.Model;
 using Agricon.Core.Model.Entities;
 using Agricon.Core.Model.Enums;
 using Agricon.Infrastructure.Repository;
+using iText.Kernel.Colors;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
+
 
 namespace Agricon.Core.Application.Services
 {
@@ -197,5 +202,60 @@ namespace Agricon.Core.Application.Services
             return transactions;
         }
 
+        public async Task<byte[]> GenerateTransactionReceiptByBookingIdAsync(int bookingId)
+        {
+            var transaction = await _repo.GetByBookingIdAsync(bookingId);
+            if (transaction == null)
+                throw new Exception("Transaction not found");
+
+            using var ms = new MemoryStream();
+            using var writer = new PdfWriter(ms);
+            using var pdf = new PdfDocument(writer);
+            var document = new iText.Layout.Document(pdf);
+
+            // Red Warning Section
+            var redBg = new iText.Layout.Element.Paragraph("This is the receipt of your transaction.")
+                .SetBackgroundColor(new DeviceRgb(0, 100, 0))
+                .SetFontColor(iText.Kernel.Colors.ColorConstants.WHITE)
+                .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+                .SetPadding(5);
+            document.Add(redBg);
+
+            document.Add(new Paragraph("\n"));
+            var blueBg = new Div()
+               .SetBackgroundColor(new DeviceRgb(0, 100, 0))
+                .SetPadding(20)
+                .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
+
+            blueBg.Add(new Paragraph($"You made the payment of ").SetFontColor(iText.Kernel.Colors.ColorConstants.WHITE));
+            blueBg.Add(new Paragraph($"NGN {transaction.Amount:N2}").SetFontSize(24).SetFontColor(iText.Kernel.Colors.ColorConstants.WHITE));
+
+            document.Add(blueBg);
+            document.Add(new Paragraph("\n"));
+
+            // Transaction Details Heading
+            document.Add(new Paragraph("Transaction Details").SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER).SetFontSize(14));
+            document.Add(new Paragraph("\n"));
+            AddDetailRow(document, "Reference", transaction.Reference);
+           // AddDetailRow(document, "Booking ID", transaction.BookingId.ToString());
+            AddDetailRow(document, "Description", transaction.Description.ToString());
+            AddDetailRow(document, "Payment Method", transaction.PaymentMethod.ToString());
+            AddDetailRow(document, "Amount Paid", $"NGN {transaction.Amount:N2}");
+            AddDetailRow(document, "Payment Status", transaction.Status.ToString());
+            AddDetailRow(document, "Date", transaction.CreatedAt.ToString("dd MMM, yyyy HH:mm:ss"));
+            document.Close();
+            return ms.ToArray();
+        }
+        private void AddDetailRow(Document document, string label, string value)
+        {
+            var p = new Paragraph()
+                .Add(new Text($"{label}: "))
+                .Add(new Text(value));
+            document.Add(p);
+        }
+        public async Task<Transaction> GetByBookingIdAsync(int bookingid)
+        {
+            return await _repo.GetByBookingIdAsync(bookingid);
+        }
     }
 }

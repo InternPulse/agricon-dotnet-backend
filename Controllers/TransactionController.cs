@@ -52,5 +52,15 @@ namespace Agricon.Controllers
             var transactions = await _transactionService.GetAllAsync(page, size);
             return Ok(transactions);
         }
+        [HttpGet("{bookingid}/receipt")]
+        public async Task<IActionResult> DownloadReceipt(int bookingid)
+        {
+            var transaction = await _transactionService.GetByBookingIdAsync(bookingid);
+            if (transaction == null)
+                return NotFound("Transaction not found");
+
+            var pdfBytes = await _transactionService.GenerateTransactionReceiptByBookingIdAsync(bookingid);
+            return File(pdfBytes, "application/pdf", $"Booking Receipt.pdf");
+        }
     }
 }

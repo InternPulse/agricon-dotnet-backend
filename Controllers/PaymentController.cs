@@ -1,5 +1,4 @@
 ﻿using Agricon.Core.Application.Interface.Services;
-using Agricon.Core.Application.Services;
 using Agricon.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
